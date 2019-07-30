@@ -76,7 +76,7 @@
         var data = JSON.parse(result.data);
         console.log(data)
         if (data.cmd === 3) {
-          online.innerText = `onlie: ${data.data}`
+          online.innerText = `在线人数：${data.data}`
         } else if (data.cmd === 2) {
           memory.value = data.data
         }
