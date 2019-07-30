@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"time"
 
-	. "gitee.com/soekchl/myUtils"
-	"gitee.com/soekchl/webServer/src/common/config"
+	. "github.com/soekchl/myUtils"
+	"github.com/soekchl/webServer/src/common/config"
 	"github.com/soekchl/websocket"
 	// "code.google.com/p/go.net/websocket"
 )
