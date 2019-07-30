@@ -1,0 +1,7 @@
+github.com/StackExchange/wmi v0.0.0-20181212234831-e0a55b97c705/go.mod h1:3eOhrUMpNV+6aFIbp5/iudMxNCF27Vw2OZgy4xEx0Fg=
+github.com/go-ole/go-ole v1.2.4/go.mod h1:XCwSNxSkXRo4vlyPy93sltvi/qJq0jqQhjqQNIwKuxM=
+github.com/shirou/gopsutil v2.18.12+incompatible/go.mod h1:5b4v6he4MtMOwMlS0TUMTu2PcXUg8+E1lC7eC3UO/RA=
+github.com/soekchl/myUtils v0.0.0-20190702013325-a0f93c36eb99 h1:of56kkvKWY1tx9/C7u/pYwljHnMuK00+H4up2/FC0V8=
+github.com/soekchl/myUtils v0.0.0-20190702013325-a0f93c36eb99/go.mod h1:CakvUGrwWYmN72uXUtx0HW0N0iw2zGC6hj09SueWebY=
+github.com/soekchl/websocket v0.0.0-20130122144708-14f8b2f699a3 h1:HJkgOKzAeIjTnyHBH/w9VxMeT2PFRD8F4UNuBNowNcY=
+github.com/soekchl/websocket v0.0.0-20130122144708-14f8b2f699a3/go.mod h1:xLbDluhBEVhxEPAbiv3EDHH7IIyQYTowQc9J00xpkgU=
