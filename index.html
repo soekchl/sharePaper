@@ -45,53 +45,64 @@
 
 </html>
 <script>
-  //初始化工具方法
-  var wsUrl = "wss://share.utcgame.com/webSocket";
-  ws = new WebSocket(wsUrl);
-  try {
-    ws.onopen = function () {
-      console.log("open")
-    }
-    ws.onclose = function () {
-      if (ws) {
-        ws.close();
-        ws = null;
-      }
-      console.log("close ws")
-    }
-    ws.onmessage = function (result) {
-      var data = JSON.parse(result.data);
-      console.log(data)
-      if (data.cmd === 3) {
-        online.innerText = `onlie: ${data.data}`
-      } else if (data.cmd === 2) {
-        memory.value = data.data
-      }
-    }
 
-    ws.onerror = function () {
-      if (ws) {
-        ws.close();
-        ws = null;
-      }
-      console.log("close ws")
-    }
+  memory.oninput = changeText
+  let ws = null
+  conn()
 
-  } catch (e) {
-    console.log(e.message);
+  function conn() {
+    if (ws) {
+      return
+    }
+    // var wsUrl = "ws://localhost:8080/webSocket";
+    var wsUrl = "wss://share.utcgame.com/webSocket";
+    ws = new WebSocket(wsUrl);
+    try {
+      ws.onopen = function () {
+        console.log("open")
+      }
+      ws.onclose = function () {
+        if (ws) {
+          ws.close();
+          ws = null;
+        }
+        console.log("close ws")
+        checkReConn()
+      }
+      ws.onmessage = function (result) {
+        var data = JSON.parse(result.data);
+        console.log(data)
+        if (data.cmd === 3) {
+          online.innerText = `onlie: ${data.data}`
+        } else if (data.cmd === 2) {
+          memory.value = data.data
+        }
+      }
+    } catch (e) {
+      console.log(e.message);
+    }
+  }
+
+  function checkReConn() {
+    if (ws) {
+      return
+    }
+    if (confirm("连接已断开，是否重新连接？")) {
+      conn()
+    }
   }
 
   function changeText() {
     if (!ws) {
       console.log("closed ws")
+      checkReConn()
       return
     }
     let data = {
-      cmd : 2,
-      data : memory.value
+      cmd: 2,
+      data: memory.value
     }
     ws.send(JSON.stringify(data))
   }
-  memory.oninput = changeText
 
 </script>
