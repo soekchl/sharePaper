@@ -61,12 +61,12 @@ func main() {
 }
 
 func index(w http.ResponseWriter, r *http.Request) {
-	Debug("index")
+	Debugf("index ip=%v", r.RemoteAddr)
 	http.ServeFile(w, r, "index.html")
 }
 
 func webSocket(ws *websocket.Conn) {
-	Debug("websocket")
+	Debugf("websocket ip=%v", ws.RemoteAddr().String())
 	// save webSocket List
 	index := addUsers(ws)
 	changeOnline(1)
@@ -76,7 +76,7 @@ func webSocket(ws *websocket.Conn) {
 	var buff string
 	for {
 		err = websocket.Message.Receive(ws, &buff)
-		Debug("data：", buff)
+		// Debug("data：", buff)
 		if err != nil {
 			//移除出错的链接
 			break
@@ -96,7 +96,6 @@ func webSocket(ws *websocket.Conn) {
 			paper.mTime = time.Now()
 		}
 	}
-
 	//	close
 	changeOnline(-1)
 	users[index] = nil
