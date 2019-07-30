@@ -1,16 +1,15 @@
 package main
 
 import (
-	"webServer/src/common/config"
-	//"gitee.com/soekchl/webServer/src/common/config"
 	"encoding/json"
 	"fmt"
 	"net/http"
-
 	"time"
 
-	. "github.com/soekchl/myUtils"
+	. "gitee.com/soekchl/myUtils"
+	"gitee.com/soekchl/webServer/src/common/config"
 	"github.com/soekchl/websocket"
+	// "code.google.com/p/go.net/websocket"
 )
 
 /*
