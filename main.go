@@ -24,8 +24,8 @@ import (
 		2-edit paper
 */
 type Message struct {
-	Cmd  int
-	Data string
+	Cmd  int    `json:"cmd"`
+	Data string `json:"data"`
 	ws   *websocket.Conn
 }
 
@@ -67,21 +67,16 @@ func index(w http.ResponseWriter, r *http.Request) {
 
 func webSocket(ws *websocket.Conn) {
 	Debug("websocket")
-	data := Message{}
-	err := websocket.Message.Receive(ws, &data)
-	if err != nil {
-		Error(err)
-		return
-	}
-
 	// save webSocket List
 	index := addUsers(ws)
 	changeOnline(1)
+	sendInitData(ws)
+	var err error
 	// receive
 	var buff string
 	for {
 		err = websocket.Message.Receive(ws, &buff)
-		Debug("data：", data)
+		Debug("data：", buff)
 		if err != nil {
 			//移除出错的链接
 			break
@@ -95,7 +90,10 @@ func webSocket(ws *websocket.Conn) {
 		}
 		if msg.Cmd == 2 {
 			msg.ws = ws
+			paper.data = msg.Data
 			sendMsg <- msg
+			paper.ip = ws.RemoteAddr().String()
+			paper.mTime = time.Now()
 		}
 	}
 
@@ -122,6 +120,18 @@ func changeOnline(value int) {
 		Cmd:  3,
 		Data: fmt.Sprint(paper.count),
 	})
+}
+
+func sendInitData(ws *websocket.Conn) {
+	buff, err := json.Marshal(&Message{
+		Cmd:  2,
+		Data: paper.data,
+	})
+	if err != nil {
+		Error(err)
+		return
+	}
+	websocket.Message.Send(ws, string(buff))
 }
 
 func send(msg *Message) {

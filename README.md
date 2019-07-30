@@ -1,7 +1,7 @@
 # sharePaper
 
 #### 介绍
-共享写字板
+共享写字板 使用websock共享每个人写的内容
 
 #### 软件架构
 软件架构说明
@@ -9,9 +9,10 @@
 
 #### 安装教程
 
-1. xxxx
-2. xxxx
-3. xxxx
+1. git clone https://gitee.com/soekchl/sharePaper.git
+2. cd sharePaper
+3. go build
+4. ./sharePaper
 
 #### 使用说明
 

@@ -1,48 +1,97 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
-    <title></title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <!-- 新 Bootstrap 核心 CSS 文件 -->
-    <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
-    <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
-    <!--        <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>-->
+  <title>share paper</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <!-- 新 Bootstrap 核心 CSS 文件 -->
+  <!-- <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script> -->
+  <!--        <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>-->
+  <style>
+    fieldset {
+      display: block;
+      margin-inline-start: 2px;
+      margin-inline-end: 2px;
+      padding-block-start: 0.35em;
+      padding-inline-start: 0.75em;
+      padding-inline-end: 0.75em;
+      padding-block-end: 0.625em;
+      min-inline-size: min-content;
+      border-width: 2px;
+      border-style: groove;
+      border-color: threedface;
+      border-image: initial;
+    }
+
+    legend {
+      display: block;
+      padding-inline-start: 2px;
+      padding-inline-end: 2px;
+      border-width: initial;
+      border-style: none;
+      border-color: initial;
+      border-image: initial;
+    }
+  </style>
 </head>
+
 <body>
+  <fieldset>
+    <legend><b>共享文本框</b> <label for="" id="online">online </label></legend>
+    <textarea id="memory" autofocus placeholder="share paper memory" style="width:100%; height: 720px;"></textarea>
+  </fieldset>
 </body>
+
 </html>
-
 <script>
-        //初始化工具方法
-        var wsUrl = "ws://192.168.1.101:8080/webSocket";
-        ws = new WebSocket(wsUrl);
-        try {
-            ws.onopen = function () {
-				alert("open")
-            }
-            ws.onclose = function () {
-                if (ws) {
-                    ws.close();
-                    ws = null;
-                }
-				alert("close ws")
-            }
-            ws.onmessage = function (result) {
-                console.log(result.data);
-                var data = JSON.parse(result.data);
-				alert(result.data)
-				alert(data)
-            }
+  //初始化工具方法
+  var wsUrl = "ws://192.168.1.100:8080/webSocket";
+  ws = new WebSocket(wsUrl);
+  try {
+    ws.onopen = function () {
+      console.log("open")
+    }
+    ws.onclose = function () {
+      if (ws) {
+        ws.close();
+        ws = null;
+      }
+      console.log("close ws")
+    }
+    ws.onmessage = function (result) {
+      var data = JSON.parse(result.data);
+      console.log(data)
+      if (data.cmd === 3) {
+        online.innerText = `onlie: ${data.data}`
+      } else if (data.cmd === 2) {
+        memory.value = data.data
+      }
+    }
 
-            ws.onerror = function () {
-                if (ws) {
-                    ws.close();
-                    ws = null;
-                }
-				alert("close ws")
-            }
+    ws.onerror = function () {
+      if (ws) {
+        ws.close();
+        ws = null;
+      }
+      console.log("close ws")
+    }
 
-        } catch (e) {
-            alert(e.message);
-        }
+  } catch (e) {
+    console.log(e.message);
+  }
+
+  function changeText() {
+    if (!ws) {
+      console.log("closed ws")
+      return
+    }
+    let data = {
+      cmd : 2,
+      data : memory.value
+    }
+    ws.send(JSON.stringify(data))
+  }
+  memory.oninput = changeText
+
 </script>
