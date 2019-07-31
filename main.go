@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"sync"
 	"time"
 
 	. "github.com/soekchl/myUtils"
@@ -15,7 +16,7 @@ import (
 /*
 	---Cmd List---
 	server->client
-		1-init		-	not used
+		1-init
 		2-edit paper
 		3-online count
 	client->server
@@ -23,28 +24,29 @@ import (
 		2-edit paper
 */
 type Message struct {
-	Cmd  int    `json:"cmd"`
-	Data string `json:"data"`
-	ws   *websocket.Conn
+	Cmd   int    `json:"cmd"`
+	Index int    `json:"index"`
+	Data  string `json:"data"`
+	ws    *websocket.Conn
 }
 
 type Paper struct {
-	data  string    // paper data save momery
+	Data  string    `json:"data"` // paper data save momery
 	mTime time.Time // last edit time
 	ip    string    // last edit ip
-	count int       // online count
 }
 
 //全局信息
 var users []*websocket.Conn
-var paper *Paper
+var allCount = 0
+var paperMap = make(map[int]*Paper)
+var paperMapMutex sync.RWMutex
 var sendMsg chan *Message
 
 func init() {
 	configName := "./config/config.ini"
 	config.Config(configName)
 
-	paper = &Paper{mTime: time.Now()}
 	sendMsg = make(chan *Message, 10)
 }
 
@@ -89,15 +91,31 @@ func webSocket(ws *websocket.Conn) {
 		}
 		if msg.Cmd == 2 {
 			msg.ws = ws
-			paper.data = msg.Data
+			paperSet(msg, ws.RemoteAddr().String())
 			sendMsg <- msg
-			paper.ip = ws.RemoteAddr().String()
-			paper.mTime = time.Now()
 		}
 	}
 	//	close
 	changeOnline(-1)
 	users[index] = nil
+}
+
+func paperSet(msg *Message, ip string) {
+	paperMapMutex.Lock()
+	defer paperMapMutex.Unlock()
+	tmp, ok := paperMap[msg.Index]
+	if !ok {
+		tmp = &Paper{}
+	}
+	if len(msg.Data) < 1 {
+		delete(paperMap, msg.Index)
+		return
+	}
+	tmp.Data = msg.Data
+	tmp.ip = ip
+	tmp.mTime = time.Now()
+	paperMap[msg.Index] = tmp
+	// Warnf("%#v", tmp)
 }
 
 func sendServer() {
@@ -112,23 +130,33 @@ func sendServer() {
 
 // send online count edit
 func changeOnline(value int) {
-	paper.count += value
-	Debugf("changeOnline online=%v value=%v", paper.count, value)
+	allCount += value
+	Debugf("changeOnline online=%v value=%v", allCount, value)
 	send(&Message{
 		Cmd:  3,
-		Data: fmt.Sprint(paper.count),
+		Data: fmt.Sprint(allCount),
 	})
 }
 
 func sendInitData(ws *websocket.Conn) {
+	paperMapMutex.RLock()
+	defer paperMapMutex.RUnlock()
+
+	mbuff, err := json.Marshal(&paperMap)
+	if err != nil {
+		Error(err)
+		return
+	}
+
 	buff, err := json.Marshal(&Message{
-		Cmd:  2,
-		Data: paper.data,
+		Cmd:  1,
+		Data: string(mbuff),
 	})
 	if err != nil {
 		Error(err)
 		return
 	}
+	Debug(string(buff))
 	websocket.Message.Send(ws, string(buff))
 }
 
