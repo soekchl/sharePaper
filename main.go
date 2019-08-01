@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	. "github.com/soekchl/myUtils"
+	. "gitee.com/soekchl/myUtils"
 	"github.com/soekchl/websocket"
 	// "code.google.com/p/go.net/websocket"
 )
