@@ -66,10 +66,11 @@
   add.onclick = addText
   let ws = null
   let textCount = 1
+  let initFlag = true
   addText(0)
   conn()
 
-  function addText(count, value = '') {
+  function addText(count, value = '', lockFlag = false) {
     if (typeof count === 'object') {
       count = textCount++
     } else if (textCount <= count) {
@@ -83,9 +84,29 @@
     tmp.oninput = changeText
     tmp.placeholder = `share paper memory ${count}`
     tmp.onkeyup = checkDel
+    tmp.disabled = lockFlag
+    tmp.onfocus = lock
+    tmp.onblur = unlock
+    // tmp.onmouseover = console.log
     tmp.value = value
     texts.appendChild(tmp)
-    texts.children[texts.children.length - 1].focus()
+    // texts.children[texts.children.length - 1].focus()
+  }
+  function lock(e) {
+    if (initFlag) {
+      return
+    }
+    console.log(e.target.id, 'lock')
+    // e.target.disabled = true
+    sendData(4, e.target.name)
+  }
+
+  function unlock(e) {
+    if (initFlag) {
+      return
+    }
+    console.log(e.target.id, 'unlock')
+    sendData(5, e.target.name)
   }
 
   function checkDel() {
@@ -100,9 +121,6 @@
     }
     if (x === 8 && this.value.length < 1) {
       this.remove()
-      if (texts.children.length > 0) {
-        texts.children[0].focus()
-      }
     }
   }
 
@@ -110,8 +128,9 @@
     if (ws) {
       return
     }
-    // var wsUrl = "ws://localhost:8080/webSocket";
-    var wsUrl = "wss://share.utcgame.com/webSocket";
+    initFlag = true
+    var wsUrl = "ws://localhost:8080/webSocket";
+    // var wsUrl = "wss://share.utcgame.com/webSocket";
     ws = new WebSocket(wsUrl);
     try {
       ws.onopen = function () {
@@ -128,33 +147,52 @@
       ws.onmessage = function (result) {
         var data = JSON.parse(result.data);
         console.log(data)
-        if (data.cmd === 3) {
-          online.innerText = `在线人数：${data.data}`
-        } else if (data.cmd === 2) {
-          let tmp = document.getElementById(`memory_${data.index || 0}`)
-          if (tmp) {
-            tmp.value = data.data
-          } else {
-            addText(data.index, data.data)
-          }
-          tmp.focus()
-        } else if (data.cmd === 1) {
-          let list = JSON.parse(data.data)
-          console.log(list)
-          for (let key in list) {
-            const item = list[key]
-            let tmp = document.getElementById(`memory_${key || 0}`)
-            if (tmp) {
-              tmp.value = item.data
-            } else {
-              addText(+key, item.data)
-            }
-          }
+        switch (data.cmd) {
+          case 1: initData(data); break;
+          case 2: editMemory(data); break
+          case 3: online.innerText = `在线人数：${data.data}`; break
+          case 4: setMemoryStatus(data.index, true); break;
+          case 5: setMemoryStatus(data.index, false); break;
         }
       }
     } catch (e) {
       console.log(e.message);
     }
+  }
+
+  function setMemoryStatus(index, lockFlag = true) {
+    let tmp = document.getElementById(`memory_${index || 0}`)
+    if (tmp) {
+      console.log(index, 'lock')
+      tmp.disabled = lockFlag
+    }
+  }
+
+  function editMemory(data) {
+    let tmp = document.getElementById(`memory_${data.index || 0}`)
+    if (tmp) {
+      tmp.value = data.data
+      tmp.disabled = true
+    } else {
+      addText(data.index, data.data, true)
+    }
+    // tmp.focus()
+  }
+
+  function initData(data) {
+    let list = JSON.parse(data.data)
+    // console.log(list)
+    for (let key in list) {
+      const item = list[key]
+      let tmp = document.getElementById(`memory_${key || 0}`)
+      if (tmp) {
+        tmp.value = item.data
+        tmp.disabled = item.lock
+      } else {
+        addText(+key, item.data, item.lock)
+      }
+    }
+    initFlag = false
   }
 
   function checkReConn() {
@@ -166,18 +204,21 @@
     }
   }
 
+  function sendData(cmd, index, data = '') {
+    let tmpData = { cmd, index: +index, data }
+    if (!ws) {
+      return
+    }
+    ws.send(JSON.stringify(tmpData))
+  }
+
   function changeText() {
     if (!ws) {
       console.log("closed ws")
       checkReConn()
       return
     }
-    let data = {
-      cmd: 2,
-      index: +this.name,
-      data: this.value
-    }
-    ws.send(JSON.stringify(data))
+    sendData(2, +this.name, this.value)
   }
 
 

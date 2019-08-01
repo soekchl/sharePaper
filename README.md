@@ -5,8 +5,14 @@ https://share.utcgame.com/
 #### 介绍
 共享写字板 使用websock共享每个人写的内容
 
-#### 软件架构
-软件架构说明
+##### v0.2.1
+	增加 - 编辑文本内容 对其他用户加锁
+
+#### v0.2.0
+	多个编辑框文本传输
+
+#### v0.1.0
+	单个编辑框文本传输
 
 
 #### 安装教程
@@ -14,21 +20,7 @@ https://share.utcgame.com/
 1. git clone https://gitee.com/soekchl/sharePaper.git
 2. cd sharePaper
 3. go build
-4. ./sharePaper
-
-#### 使用说明
-
-1. xxxx
-2. xxxx
-3. xxxx
-
-#### 参与贡献
-
-1. Fork 本仓库
-2. 新建 Feat_xxx 分支
-3. 提交代码
-4. 新建 Pull Request
-
+4. ./sharePaper :8080
 
 #### 码云特技
 

@@ -5,28 +5,18 @@ https://share.utcgame.com/
 #### Description
 共享写字板
 
-#### Software Architecture
-Software architecture description
+##### v0.2.1
+	增加编辑框编辑时加锁
+
+#### v0.1.0
+	单个编辑框文本传输
 
 #### Installation
 
-1. xxxx
-2. xxxx
-3. xxxx
-
-#### Instructions
-
-1. xxxx
-2. xxxx
-3. xxxx
-
-#### Contribution
-
-1. Fork the repository
-2. Create Feat_xxx branch
-3. Commit your code
-4. Create Pull Request
-
+1. git clone https://gitee.com/soekchl/sharePaper.git
+2. cd sharePaper
+3. go build
+4. ./sharePaper :8080
 
 #### Gitee Feature
 
