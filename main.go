@@ -58,8 +58,13 @@ func init() {
 		serverPort = os.Args[1]
 	}
 	paperMap[-1] = &Paper{
-		Data: `v0.2.1 更新版本\n\n增加了用户唯一编辑\n\n当一个用户编辑的时候其他用户页面当前编辑框不可编辑`,
-		Lock: false,
+		Data: `
+v0.2.1 更新版本
+
+增加了用户唯一编辑
+
+当一个用户编辑的时候其他用户页面当前编辑框不可编辑`,
+		Lock: true,
 	}
 }
 
