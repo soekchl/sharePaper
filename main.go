@@ -120,7 +120,7 @@ func webSocket(ws *websocket.Conn) {
 		}
 		if msg.Cmd == 2 || msg.Cmd == 4 || msg.Cmd == 5 {
 			msg.ws = ws
-			Debugf("cmd=%v id=%v", msg.Cmd, index)
+			// Debugf("cmd=%v id=%v", msg.Cmd, index)
 			paperSet(msg, ws.RemoteAddr().String(), index)
 			sendMsg <- msg
 		}
