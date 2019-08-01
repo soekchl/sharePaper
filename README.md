@@ -7,7 +7,8 @@ https://share.utcgame.com/
 
 ##### v0.2.1
 	增加 - 编辑文本内容 对其他用户加锁
-![comment](https://gitee.com/soekchl/gifImgs/blob/master/sharePaper/v0.2.1.gif)
+	
+![image](https://gitee.com/soekchl/gifImgs/blob/master/sharePaper/v0.2.1.gif)
 
 #### v0.2.0
 	多个编辑框文本传输
