@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	. "gitee.com/soekchl/myUtils"
+	. "github.com/soekchl/myUtils"
 	"github.com/soekchl/websocket"
 	// "code.google.com/p/go.net/websocket"
 )
@@ -63,7 +63,13 @@ v0.2.1 更新版本
 
 增加了用户唯一编辑
 
-当一个用户编辑的时候其他用户页面当前编辑框不可编辑`,
+当一个用户编辑的时候其他用户页面当前编辑框不可编辑
+
+后续会增加
+1、加密传输
+2、隐私编辑框（需使用密码编辑和查看）
+3、redis存储
+`,
 		Lock: true,
 	}
 }
