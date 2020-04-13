@@ -1,7 +1,5 @@
 # sharePaper
 
-https://share.utcgame.com/
-
 #### 介绍
 共享写字板 使用websock共享每个人写的内容
 

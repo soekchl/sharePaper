@@ -129,8 +129,8 @@
       return
     }
     initFlag = true
-    // let wsUrl = "ws://localhost:8080/webSocket";
-    let wsUrl = "wss://share.utcgame.com/webSocket";
+     let wsUrl = "ws://192.168.2.248:8080/webSocket";
+    //let wsUrl = "wss://share.utcgame.com/webSocket";
     ws = new WebSocket(wsUrl);
     try {
       ws.onopen = function () {
