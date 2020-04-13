@@ -81,7 +81,7 @@ func main() {
 	http.HandleFunc("/monitor", monitor)
 	//绑定socket方法
 	http.Handle("/webSocket", websocket.Handler(webSocket))
-	Notice("Listen ", serverPort)
+	Notice("Listen ", GetIp(), serverPort)
 	go sendServer()
 	//开始监听
 	http.ListenAndServe(serverPort, nil)
